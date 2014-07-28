@@ -1,0 +1,39 @@
+name "auv_helper"
+
+import_types_from "base"
+
+
+task_context "depth_and_orientation_fusion" do
+    input_port "orientation_samples", "/base/samples/RigidBodyState"
+    input_port "depth_samples", "/base/samples/RigidBodyState"
+    input_port "ground_distance", "base/samples/RigidBodyState"
+    output_port "pose_samples", "/base/samples/RigidBodyState"
+
+    property("heading_offset","double",0)
+    property("use_initial_heading","bool",true)    
+    property("depth_correction_buffer_size", "int", 100).
+      doc("Size of the offset buffer, set to 0 to disable")
+    property("minimum_buffer_size", "int", 20).
+      doc("Minimum number of elements in the buffer")
+    property("ground_depth", "double", -8.0).
+      doc("Position of the ground, default for maritime hall")
+
+    operation('resetInitialHeading').
+        doc('resets the heading offset (also the property value')
+    
+
+    stream_aligner do
+        max_latency 0.5
+        align_port "orientation_samples", 0
+        align_port "depth_samples", 0
+        align_port "ground_distance", 0
+    end
+
+    error_states "GOT_INVALID_ORIENTATION", "GOT_INVALID_DEPTH"
+    runtime_states "WAITING_FOR_DEPTH", "WAITING_FOR_ORIENTATION"
+
+    port_driven :orientation_samples
+    port_driven :depth_samples
+    port_driven :ground_distance
+end
+
