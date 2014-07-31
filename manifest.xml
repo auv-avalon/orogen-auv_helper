@@ -1,0 +1,10 @@
+<package>
+  <description brief="auv_helper">
+    Library for small auvhelping tasks that suport normal AUV operation
+  </description>
+  <author>Matthias Goldhoorn/matthias.goldhoorn@uni-bremen.de</author>
+  <license>LGPL</license>
+  <depend package="base/orogen/types" />
+  <depend package="drivers/orogen/aggregator" />
+  <tags>stable</tags>
+</package>
